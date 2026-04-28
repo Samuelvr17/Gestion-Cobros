@@ -12,7 +12,7 @@ import '../features/collector/prestamos_screen.dart';
 import '../features/admin/usuarios_screen.dart';
 import '../features/admin/fondos_screen.dart';
 import '../features/admin/reportes_screen.dart';
-import '../features/dashboard/dashboard_screen.dart';
+import '../features/admin/dashboard_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authNotifierProvider);
