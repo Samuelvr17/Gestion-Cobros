@@ -112,7 +112,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.redAccent.withOpacity(0.1),
+                        color: Colors.redAccent.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.redAccent),
                       ),
@@ -203,7 +203,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
                               ),
-                        color: authState.isLoading ? Colors.grey.withOpacity(0.3) : null,
+                        color: authState.isLoading ? Colors.grey.withValues(alpha: 0.3) : null,
                       ),
                       child: ElevatedButton(
                         onPressed: authState.isLoading ? null : _submit,

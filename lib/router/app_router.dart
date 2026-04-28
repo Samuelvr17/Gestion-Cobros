@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/auth/auth_provider.dart';
@@ -12,6 +12,7 @@ import '../features/collector/prestamos_screen.dart';
 import '../features/admin/usuarios_screen.dart';
 import '../features/admin/fondos_screen.dart';
 import '../features/admin/reportes_screen.dart';
+import '../features/dashboard/dashboard_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authNotifierProvider);

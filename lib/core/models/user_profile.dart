@@ -5,7 +5,7 @@ class UserProfile extends Equatable {
   final String fullName;
   final String? phone;
   final String? cedula;
-  final int roleId;
+  final String roleId;
   final String? roleName;
   final bool isActive;
   final bool mustChangePassword;
@@ -51,7 +51,7 @@ class UserProfile extends Equatable {
     String? fullName,
     String? phone,
     String? cedula,
-    int? roleId,
+    String? roleId,
     String? roleName,
     bool? isActive,
     bool? mustChangePassword,
