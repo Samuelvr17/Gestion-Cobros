@@ -13,6 +13,8 @@ import '../features/admin/usuarios_screen.dart';
 import '../features/admin/fondos_screen.dart';
 import '../features/admin/reportes_screen.dart';
 import '../features/admin/dashboard_screen.dart';
+import '../core/utils/role_logic.dart';
+import '../features/auth/change_password_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authNotifierProvider);
@@ -23,6 +25,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/change-password',
+        builder: (context, state) => const ChangePasswordScreen(),
       ),
       ShellRoute(
         builder: (context, state, child) => MainLayout(child: child),
@@ -67,20 +73,36 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
     redirect: (context, state) {
-      final isLoggedIn = authState.user != null;
-      final isLoggingIn = state.matchedLocation == '/login';
+      final user = authState.user;
+      final isLoggedIn = user != null;
+      final matchedLocation = state.matchedLocation;
+      final isLoggingIn = matchedLocation == '/login';
 
       if (!isLoggedIn) {
         return isLoggingIn ? null : '/login';
       }
 
-      if (isLoggingIn) {
-        final role = authState.user?.roleName?.toLowerCase() ?? '';
-        if (role == 'admin' || role == 'auxiliar') {
-          return '/dashboard';
-        } else if (role == 'cobrador') {
-          return '/caja';
+      // If user must change password, only allow /change-password and /login
+      if (user.mustChangePassword) {
+        if (matchedLocation == '/change-password' || isLoggingIn) {
+          return null;
         }
+        return '/change-password';
+      }
+
+      // If user DOES NOT need to change password but tries to go to /change-password, redirect to home
+      if (matchedLocation == '/change-password') {
+        return RoleLogic.homeForRole(user.roleName);
+      }
+
+      // If user tries to go to login while logged in, redirect to home
+      if (isLoggingIn) {
+        return RoleLogic.homeForRole(user.roleName);
+      }
+
+      // Role-based access control
+      if (!RoleLogic.canAccess(user.roleName, matchedLocation)) {
+        return RoleLogic.homeForRole(user.roleName);
       }
 
       return null;

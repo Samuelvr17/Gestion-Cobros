@@ -12,10 +12,17 @@ void main() async {
   // Load environment variables
   await dotenv.load(fileName: ".env");
 
+  final url = SupabaseConstants.url;
+  final anonKey = SupabaseConstants.anonKey;
+
+  if (url.isEmpty || anonKey.isEmpty) {
+    throw Exception('SUPABASE_URL o SUPABASE_ANON_KEY no configurados en .env');
+  }
+
   // Initialize Supabase
   await Supabase.initialize(
-    url: SupabaseConstants.url,
-    anonKey: SupabaseConstants.anonKey,
+    url: url,
+    anonKey: anonKey,
   );
 
   final container = ProviderContainer();
@@ -46,7 +53,6 @@ class MyApp extends ConsumerWidget {
           brightness: Brightness.dark,
         ),
         scaffoldBackgroundColor: const Color(0xFF0C1220),
-        useMaterial3: true,
       ),
       routerConfig: router,
     );

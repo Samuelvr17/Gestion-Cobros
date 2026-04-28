@@ -18,17 +18,18 @@ class AuthState {
   });
 
   AuthState copyWith({
-    UserProfile? user,
+    Object? user = _sentinel,
     bool? isLoading,
-    String? errorMessage,
-    bool clearError = false,
+    Object? errorMessage = _sentinel,
   }) {
     return AuthState(
-      user: user ?? this.user,
+      user: user == _sentinel ? this.user : (user as UserProfile?),
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      errorMessage: errorMessage == _sentinel ? this.errorMessage : (errorMessage as String?),
     );
   }
+
+  static const _sentinel = Object();
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
@@ -37,13 +38,22 @@ class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier(this._authService) : super(AuthState());
 
   Future<void> checkSession() async {
-    state = state.copyWith(isLoading: true);
-    final user = await _authService.getCurrentUser();
-    state = state.copyWith(user: user, isLoading: false);
+    try {
+      state = state.copyWith(isLoading: true);
+      final user = await _authService.getCurrentUser();
+      state = state.copyWith(user: user, isLoading: false);
+    } catch (e) {
+      // Handle error gracefully on startup (e.g. network issues)
+      state = state.copyWith(
+        user: null, 
+        isLoading: false,
+        errorMessage: 'Error al conectar: ${e.toString()}',
+      );
+    }
   }
 
   Future<void> login(String email, String password) async {
-    state = state.copyWith(isLoading: true, clearError: true);
+    state = state.copyWith(isLoading: true, errorMessage: null);
     try {
       final user = await _authService.login(email, password);
       state = state.copyWith(user: user, isLoading: false);
@@ -59,6 +69,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true);
     await _authService.logout();
     state = AuthState();
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      await _authService.changePassword(newPassword);
+      // After changing password, we need to refresh the profile state
+      await checkSession();
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
+      );
+    }
   }
 }
 

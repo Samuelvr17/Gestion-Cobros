@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'auth_provider.dart';
+import '../../core/utils/validators.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -26,31 +27,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       ref.read(authNotifierProvider.notifier).login(
             _emailController.text.trim(),
-            _passwordController.text.trim(),
+            _passwordController.text,
           );
     }
   }
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'El correo es obligatorio';
-    }
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Ingresa un correo válido';
-    }
-    return null;
-  }
+  String? _validateEmail(String? value) => Validators.validateEmail(value);
 
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'La contraseña es obligatoria';
-    }
-    if (value.length < 8) {
-      return 'La contraseña debe tener al menos 8 caracteres';
-    }
-    return null;
-  }
+  String? _validatePassword(String? value) => Validators.validatePassword(value);
 
   @override
   Widget build(BuildContext context) {
