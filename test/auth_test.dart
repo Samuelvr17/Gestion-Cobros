@@ -84,19 +84,45 @@ void main() {
     });
 
     test('canAccess should validate permissions correctly', () {
-      // Admin
-      expect(RoleLogic.canAccess('admin', '/usuarios'), true);
+      // 1. Admin
       expect(RoleLogic.canAccess('admin', '/dashboard'), true);
+      expect(RoleLogic.canAccess('admin', '/usuarios'), true);
+      expect(RoleLogic.canAccess('admin', '/fondos'), true);
+      expect(RoleLogic.canAccess('admin', '/reportes'), true);
+      expect(RoleLogic.canAccess('admin', '/perfil'), true);
+      // Admin should NOT have access to collector-only routes
+      expect(RoleLogic.canAccess('admin', '/caja'), false);
+      expect(RoleLogic.canAccess('admin', '/cobros'), false);
 
-      // Collector (Cobrador)
+      // 2. Auxiliar (Restricted)
+      expect(RoleLogic.canAccess('auxiliar', '/dashboard'), true);
+      expect(RoleLogic.canAccess('auxiliar', '/reportes'), true);
+      expect(RoleLogic.canAccess('auxiliar', '/perfil'), true);
+      // AUXILIAR should NOT have access to admin-only or collector-only routes
+      expect(RoleLogic.canAccess('auxiliar', '/usuarios'), false);
+      expect(RoleLogic.canAccess('auxiliar', '/fondos'), false);
+      expect(RoleLogic.canAccess('auxiliar', '/clientes'), false);
+      expect(RoleLogic.canAccess('auxiliar', '/prestamos'), false);
+      expect(RoleLogic.canAccess('auxiliar', '/cobros'), false);
+      expect(RoleLogic.canAccess('auxiliar', '/caja'), false);
+
+      // 3. Collector (Cobrador)
       expect(RoleLogic.canAccess('cobrador', '/caja'), true);
       expect(RoleLogic.canAccess('cobrador', '/cobros'), true);
+      expect(RoleLogic.canAccess('cobrador', '/clientes'), true);
+      expect(RoleLogic.canAccess('cobrador', '/prestamos'), true);
+      expect(RoleLogic.canAccess('cobrador', '/perfil'), true);
+      // COBRADOR should NOT have access to admin-only routes
+      expect(RoleLogic.canAccess('cobrador', '/dashboard'), false);
       expect(RoleLogic.canAccess('cobrador', '/usuarios'), false);
       expect(RoleLogic.canAccess('cobrador', '/fondos'), false);
+      expect(RoleLogic.canAccess('cobrador', '/reportes'), false);
 
-      // Universal routes
+      // 4. Universal routes
+      expect(RoleLogic.canAccess('admin', '/login'), true);
+      expect(RoleLogic.canAccess('auxiliar', '/change-password'), true);
       expect(RoleLogic.canAccess('cobrador', '/login'), true);
-      expect(RoleLogic.canAccess('cobrador', '/change-password'), true);
+      expect(RoleLogic.canAccess(null, '/login'), true);
     });
   });
 }

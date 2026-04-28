@@ -15,8 +15,28 @@ class RoleLogic {
     
     final r = role?.toLowerCase() ?? '';
     
-    // Admin and Auxiliar have access to everything for now
-    if (r == admin || r == auxiliar) return true;
+    // Universal shared access
+    if (path == '/perfil') return true;
+
+    // Admin specific access
+    if (r == admin) {
+      final allowedPaths = [
+        '/dashboard',
+        '/usuarios',
+        '/fondos',
+        '/reportes',
+      ];
+      return allowedPaths.contains(path);
+    }
+    
+    // Auxiliar specific access
+    if (r == auxiliar) {
+      final allowedPaths = [
+        '/dashboard',
+        '/reportes',
+      ];
+      return allowedPaths.contains(path);
+    }
     
     // Collector specific access
     if (r == cobrador) {
@@ -25,7 +45,6 @@ class RoleLogic {
         '/cobros',
         '/clientes',
         '/prestamos',
-        '/perfil',
       ];
       return allowedPaths.contains(path);
     }
