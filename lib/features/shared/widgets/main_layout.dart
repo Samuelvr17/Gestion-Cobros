@@ -29,8 +29,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
     } else if (role == 'ADMIN') {
       if (location == '/dashboard') return 0;
       if (location == '/usuarios') return 1;
-      if (location == '/fondos') return 2;
-      if (location == '/reportes') return 3;
+      if (location == '/reportes') return 2;
     } else if (role == 'AUXILIAR') {
       if (location == '/dashboard') return 0;
       if (location == '/reportes') return 1;
@@ -66,9 +65,6 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
           context.go('/usuarios');
           break;
         case 2:
-          context.go('/fondos');
-          break;
-        case 3:
           context.go('/reportes');
           break;
       }
@@ -102,7 +98,6 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
       navItems = [
         const BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
         const BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Usuarios'),
-        const BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: 'Fondos'),
         const BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Reportes'),
       ];
     } else if (role == 'AUXILIAR') {

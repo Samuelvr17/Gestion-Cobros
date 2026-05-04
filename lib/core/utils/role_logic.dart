@@ -23,7 +23,6 @@ class RoleLogic {
       final allowedPaths = [
         '/dashboard',
         '/usuarios',
-        '/fondos',
         '/reportes',
       ];
       return allowedPaths.contains(path);
