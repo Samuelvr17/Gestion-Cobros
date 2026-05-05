@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gestion_cobros/features/auth/auth_provider.dart';
+import 'package:gestion_cobros/features/notificaciones/notificaciones_provider.dart';
 
 class MainLayout extends ConsumerStatefulWidget {
   final Widget child;
@@ -16,6 +17,17 @@ class MainLayout extends ConsumerStatefulWidget {
 }
 
 class _MainLayoutState extends ConsumerState<MainLayout> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userId = ref.read(authNotifierProvider).user?.id;
+      if (userId != null) {
+        ref.read(notificacionesProvider.notifier).loadNotifications(userId);
+      }
+    });
+  }
+
   int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).matchedLocation;
     final user = ref.read(authNotifierProvider).user;
@@ -140,6 +152,49 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
               ],
             ),
             const SizedBox(width: 8),
+            Consumer(
+              builder: (context, ref, _) {
+                final unreadCount = ref.watch(notificacionesProvider.select((s) => s.unreadCount));
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.notifications, color: Colors.white),
+                      onPressed: () => context.go('/notificaciones'),
+                    ),
+                    if (unreadCount > 0)
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Text(
+                            unreadCount > 99 ? '99+' : unreadCount.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.person, color: Colors.white),
+              onPressed: () => context.go('/perfil'),
+            ),
             IconButton(
               icon: const Icon(Icons.logout, color: Colors.white),
               onPressed: () => ref.read(authNotifierProvider.notifier).logout(),

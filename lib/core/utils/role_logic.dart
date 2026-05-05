@@ -16,7 +16,7 @@ class RoleLogic {
     final r = role?.toLowerCase() ?? '';
     
     // Universal shared access
-    if (path == '/perfil') return true;
+    if (path == '/perfil' || path == '/notificaciones') return true;
 
     // Admin specific access
     if (r == admin) {

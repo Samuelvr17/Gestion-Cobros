@@ -96,85 +96,92 @@ class _ClientesScreenState extends ConsumerState<ClientesScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : RefreshIndicator(
                     onRefresh: _loadData,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: filteredClients.length,
-                      itemBuilder: (context, index) {
-                        final client = filteredClients[index];
-                        final isPunished = client['is_punished'] == true;
+                    child: filteredClients.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'Aún no has creado clientes',
+                              style: TextStyle(color: Colors.grey, fontSize: 16),
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: filteredClients.length,
+                            itemBuilder: (context, index) {
+                              final client = filteredClients[index];
+                              final isPunished = client['is_punished'] == true;
 
-                        return Card(
-                          color: const Color(0xFF1B2333),
-                          margin: const EdgeInsets.only(bottom: 8),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ClienteDetailScreen(
-                                    client: Map<String, dynamic>.from(client as Map),
+                              return Card(
+                                color: const Color(0xFF1B2333),
+                                margin: const EdgeInsets.only(bottom: 8),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => ClienteDetailScreen(
+                                          client: Map<String, dynamic>.from(client as Map),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 12,
+                                          height: 12,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: _getTrafficLightColor(client['traffic_light']),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                client['name'] ?? '',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                'Cédula: ${client['cedula'] ?? ''}',
+                                                style: const TextStyle(color: Colors.grey, fontSize: 14),
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Text(
+                                                'Tel: ${client['phone'] ?? ''}',
+                                                style: const TextStyle(color: Colors.grey, fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        if (isPunished)
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red.withValues(alpha: 0.2),
+                                              borderRadius: BorderRadius.circular(12),
+                                              border: Border.all(color: Colors.red),
+                                            ),
+                                            child: const Text(
+                                              'Castigado',
+                                              style: TextStyle(color: Colors.red, fontSize: 12),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: _getTrafficLightColor(client['traffic_light']),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          client['name'] ?? '',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Cédula: ${client['cedula'] ?? ''}',
-                                          style: const TextStyle(color: Colors.grey, fontSize: 14),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          'Tel: ${client['phone'] ?? ''}',
-                                          style: const TextStyle(color: Colors.grey, fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (isPunished)
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red.withValues(alpha: 0.2),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: Colors.red),
-                                      ),
-                                      child: const Text(
-                                        'Castigado',
-                                        style: TextStyle(color: Colors.red, fontSize: 12),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
                           ),
-                        );
-                      },
-                    ),
                   ),
           ),
         ],

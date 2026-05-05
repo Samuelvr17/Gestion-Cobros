@@ -15,6 +15,7 @@ import '../features/admin/reportes_screen.dart';
 import '../features/admin/dashboard_screen.dart';
 import '../core/utils/role_logic.dart';
 import '../features/auth/change_password_screen.dart';
+import '../features/notificaciones/notificaciones_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authNotifierProvider);
@@ -68,6 +69,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/perfil',
             builder: (context, state) => const PerfilScreen(),
+          ),
+          GoRoute(
+            path: '/notificaciones',
+            builder: (context, state) => const NotificacionesScreen(),
           ),
         ],
       ),

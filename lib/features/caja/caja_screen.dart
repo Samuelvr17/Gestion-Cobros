@@ -223,9 +223,9 @@ class _CajaScreenState extends ConsumerState<CajaScreen> {
                 ],
               ),
             ),
-      floatingActionButton: status == 'OPEN'
+      floatingActionButton: (status == 'OPEN' && shiftId != null && user != null)
           ? FloatingActionButton(
-              onPressed: () => _showRegistrarGastoForm(context, shiftId!, user!.id),
+              onPressed: () => _showRegistrarGastoForm(context, shiftId, user.id),
               backgroundColor: Colors.blue,
               child: const Icon(Icons.add, color: Colors.white),
             )

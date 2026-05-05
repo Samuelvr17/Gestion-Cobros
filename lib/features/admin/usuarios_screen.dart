@@ -191,118 +191,125 @@ class _UsuariosScreenState extends ConsumerState<UsuariosScreen> {
                     ),
                   ],
                 )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: state.users.length,
-                  itemBuilder: (context, index) {
-                    final user = state.users[index];
-                    final roleName = user['roles']?['name'] ?? 'Sin rol';
-                    final isActive = user['is_active'] == true;
+              : state.users.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No hay usuarios registrados',
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: state.users.length,
+                      itemBuilder: (context, index) {
+                        final user = state.users[index];
+                        final roleName = user['roles']?['name'] ?? 'Sin rol';
+                        final isActive = user['is_active'] == true;
 
-                    return Card(
-                      color: const Color(0xFF1B2333),
-                      margin: const EdgeInsets.only(bottom: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: InkWell(
-                        onLongPress: () => _toggleUserStatus(user),
-                        borderRadius: BorderRadius.circular(12),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      user['full_name'] ?? 'Usuario',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      isActive ? Icons.toggle_on : Icons.toggle_off,
-                                      color: isActive ? Colors.green : Colors.grey,
-                                      size: 32,
-                                    ),
-                                    onPressed: () => _toggleUserStatus(user),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blueAccent.withAlpha(51),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      roleName.toString().toUpperCase(),
-                                      style: const TextStyle(
-                                        color: Colors.blueAccent,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: isActive
-                                          ? Colors.green.withAlpha(51)
-                                          : Colors.red.withAlpha(51),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      isActive ? 'ACTIVO' : 'INACTIVO',
-                                      style: TextStyle(
-                                        color: isActive ? Colors.green : Colors.red,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                children: [
-                                  const Icon(Icons.phone, color: Colors.white70, size: 16),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    user['phone'] ?? 'N/A',
-                                    style: const TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  const Icon(Icons.credit_card, color: Colors.white70, size: 16),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    user['cedula'] ?? 'N/A',
-                                    style: const TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                            ],
+                        return Card(
+                          color: const Color(0xFF1B2333),
+                          margin: const EdgeInsets.only(bottom: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                          child: InkWell(
+                            onLongPress: () => _toggleUserStatus(user),
+                            borderRadius: BorderRadius.circular(12),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          user['full_name'] ?? 'Usuario',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          isActive ? Icons.toggle_on : Icons.toggle_off,
+                                          color: isActive ? Colors.green : Colors.grey,
+                                          size: 32,
+                                        ),
+                                        onPressed: () => _toggleUserStatus(user),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.blueAccent.withAlpha(51),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          roleName.toString().toUpperCase(),
+                                          style: const TextStyle(
+                                            color: Colors.blueAccent,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: isActive
+                                              ? Colors.green.withAlpha(51)
+                                              : Colors.red.withAlpha(51),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          isActive ? 'ACTIVO' : 'INACTIVO',
+                                          style: TextStyle(
+                                            color: isActive ? Colors.green : Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.phone, color: Colors.white70, size: 16),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        user['phone'] ?? 'N/A',
+                                        style: const TextStyle(color: Colors.white70),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.credit_card, color: Colors.white70, size: 16),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        user['cedula'] ?? 'N/A',
+                                        style: const TextStyle(color: Colors.white70),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
     );
   }
 

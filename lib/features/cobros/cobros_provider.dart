@@ -78,7 +78,7 @@ class CobrosNotifier extends StateNotifier<CobrosState> {
         },
       );
 
-      state = state.copyWith(success: true, selectedLoan: null);
+      state = state.copyWith(success: true, selectedLoan: null, isLoading: false);
       await loadLoans(collectorId);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());

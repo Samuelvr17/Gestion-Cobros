@@ -145,113 +145,120 @@ class _CobrosScreenState extends ConsumerState<CobrosScreen> {
                 await ref.read(cobrosProvider.notifier).loadLoans(user.id);
               }
             },
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: filteredLoans.length,
-              itemBuilder: (context, index) {
-                final loan = filteredLoans[index];
-                final remainingAmount = loan['remaining_amount'] as num? ?? 0;
-                final overdueDays = loan['overdue_days'] as int? ?? 0;
-                final moraAmount = loan['mora_amount'] as num? ?? 0;
-
-                Color badgeColor;
-                String badgeText;
-                if (overdueDays == 0) {
-                  badgeColor = Colors.green;
-                  badgeText = 'Al día';
-                } else if (overdueDays <= 15) {
-                  badgeColor = Colors.yellow.shade700;
-                  badgeText = '$overdueDays días';
-                } else {
-                  badgeColor = Colors.red;
-                  badgeText = '$overdueDays días';
-                }
-
-                return Card(
-                  color: const Color(0xFF1E2738),
-                  margin: const EdgeInsets.only(bottom: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {
-                      _amountController.text = (loan['installment_amount'] as num? ?? 0).toString();
-                      ref.read(cobrosProvider.notifier).selectLoan(loan);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  loan['client_name'] ?? 'Desconocido',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: badgeColor.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: badgeColor),
-                                ),
-                                child: Text(
-                                  badgeText,
-                                  style: TextStyle(
-                                    color: badgeColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Préstamo: ${loan['loan_number'] ?? ''}',
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                currencyFormatter.format(remainingAmount),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              if (moraAmount > 0)
-                                Text(
-                                  'Mora: ${currencyFormatter.format(moraAmount)}',
-                                  style: const TextStyle(
-                                    color: Colors.redAccent,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
+            child: filteredLoans.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No tienes préstamos activos asignados',
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: filteredLoans.length,
+                    itemBuilder: (context, index) {
+                      final loan = filteredLoans[index];
+                      final remainingAmount = loan['remaining_amount'] as num? ?? 0;
+                      final overdueDays = loan['overdue_days'] as int? ?? 0;
+                      final moraAmount = loan['mora_amount'] as num? ?? 0;
+
+                      Color badgeColor;
+                      String badgeText;
+                      if (overdueDays == 0) {
+                        badgeColor = Colors.green;
+                        badgeText = 'Al día';
+                      } else if (overdueDays <= 15) {
+                        badgeColor = Colors.yellow.shade700;
+                        badgeText = '$overdueDays días';
+                      } else {
+                        badgeColor = Colors.red;
+                        badgeText = '$overdueDays días';
+                      }
+
+                      return Card(
+                        color: const Color(0xFF1E2738),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            _amountController.text = (loan['installment_amount'] as num? ?? 0).toString();
+                            ref.read(cobrosProvider.notifier).selectLoan(loan);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        loan['client_name'] ?? 'Desconocido',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: badgeColor.withValues(alpha: 0.2),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(color: badgeColor),
+                                      ),
+                                      child: Text(
+                                        badgeText,
+                                        style: TextStyle(
+                                          color: badgeColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Préstamo: ${loan['loan_number'] ?? ''}',
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      currencyFormatter.format(remainingAmount),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    if (moraAmount > 0)
+                                      Text(
+                                        'Mora: ${currencyFormatter.format(moraAmount)}',
+                                        style: const TextStyle(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ),
       ],
